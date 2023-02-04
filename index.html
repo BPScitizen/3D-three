@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시바!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="wrap">
+        <h1>시바!</h1>
+        
+        <article id="card">
+            <h2>Shiba!</h2>
+            <canvas id="canvas" width="300" height="300"></canvas>   
+        </article>
+        
+
+    </div>
+    <script type="importmap">
+
+        {
+            "imports": {
+              "three": "https://unpkg.com/three@0.149.0/build/three.module.js",
+              "GLTFLoader" : "https://unpkg.com/three@0.149.0/examples/jsm/loaders/GLTFLoader.js",
+              "OrbitControls" : "https://unpkg.com/three@0.149.0/examples/jsm/controls/OrbitControls.js "
+            }
+          }
+    </script>
+     
+
+    <script type="module">
+        import { GLTFLoader } from 'GLTFLoader';
+        import * as THREE from 'three';
+        import { OrbitControls } from 'OrbitControls'
+
+        let scene = new THREE.Scene();
+
+        let renderer = new THREE.WebGLRenderer({
+            canvas : document.querySelector('#canvas'),
+            antialias : true
+        });
+
+
+        const wrap = document.querySelector('#wrap')
+        const card = document.querySelector('#card')
+        // OrbitControls
+        // renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(300, 500);
+        card.appendChild( renderer.domElement );
+
+
+        renderer.outputEncoding = THREE.sRGBEncoding;
+
+        let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // let camera = new THREE.PerspectiveCamera(30, 1);
+        camera.position.set(0,0,10)
+
+        scene.background = new THREE.Color('white');
+        let light = new THREE.DirectionalLight(0xffff00, 10);
+        scene.add(light);
+
+        let controls = new OrbitControls( camera, renderer.domElement);
+
+        let loader = new GLTFLoader();
+        loader.load('shiba/scene.gltf', function(gltf) {
+            console.log(gltf);
+            scene.add(gltf.scene);
+            renderer.render(scene, camera);
+            function animate() {
+                requestAnimationFrame(animate)
+                gltf.scene.rotation.y -= 0.01
+                renderer.render(scene, camera);
+            }
+            animate()
+        });
+        
+         
+    </script>
+</body>
+</html>
